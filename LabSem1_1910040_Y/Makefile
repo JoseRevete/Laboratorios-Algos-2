@@ -1,6 +1,6 @@
 KC= kotlinc
 KFLAGS= -include-runtime
-PROG= PruebaOrdenamiento.jar
+PROG= PruebaAlgOrd.jar
 SRC= Ordenamiento.kt PruebaOrdenamiento.kt
 
 all:
