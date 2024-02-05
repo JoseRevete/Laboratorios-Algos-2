@@ -130,7 +130,7 @@ fun heapSort(A : Array<Number>) : Array<Number> {
 * requires: A != null && A.size > 0
 * ensures: true
 */
-fun buildMaxHeap(A : Array<Number>, n : Int) {
+fun buildMaxHeap(A : Array<Number>, n : Int) : Unit{
     for (i in (n / 2) downTo 0) {
         maxHeapify(A, i, n)
     }
@@ -141,20 +141,20 @@ fun buildMaxHeap(A : Array<Number>, n : Int) {
 * requires: A != null && A.size > 0
 * ensures: true
 */
-fun maxHeapify(A : Array<Number>, i : Int, heapSize : Int) {
+fun maxHeapify(A : Array<Number>, i : Int, heapSize : Int) : Unit {
     val l = 2 * i + 1
     val r = 2 * i + 2
-    var largest = i
-    if (l < heapSize && A[l].toDouble() > A[largest].toDouble()) {
-        largest = l
+    var largo = i
+    if (l < heapSize && A[l].toDouble() > A[largo].toDouble()) {
+        largo = l
     }
-    if (r < heapSize && A[r].toDouble() > A[largest].toDouble()) {
-        largest = r
+    if (r < heapSize && A[r].toDouble() > A[largo].toDouble()) {
+        largo = r
     }
-    if (largest != i) {
+    if (largo != i) {
         var temp = A[i]
-        A[i] = A[largest]
-        A[largest] = temp
-        maxHeapify(A, largest, heapSize)
+        A[i] = A[largo]
+        A[largo] = temp
+        maxHeapify(A, largo, heapSize)
     }
 }

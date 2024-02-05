@@ -3,7 +3,7 @@ import kotlin.system.exitProcess
 import kotlin.random.Random
 
 // Funcion main que recibe los argumentos de entrada y llama a la funcion correspondiente
-fun main(args: Array<String>) {
+fun main(args: Array<String>) : Unit {
     // Se verifica que se hayan ingresado los argumentos de entrada
     var tnum : Int = 0
     var secuencia : String = ""
@@ -71,7 +71,8 @@ fun main(args: Array<String>) {
     // Se crean arreglos para guardar los numeros de elementos
     var arrayNumeros : Array<Int> = Array<Int>(num.size*division.size) { 0 }
     for (i in 0 until num.size) {
-
+        println("____________________________________")
+        println("Número de elementos: " + num[i].toString())
         // Se ejecuta la funcion correspondiente
         if (secuencia == "random") {arrayTiempos = random(tnum, num[i], algoritmo, num.size, arrayTP, i, arrayTMin, arrayTMax)}
         else if (secuencia == "randomd") {arrayTiempos = randomd(tnum, num[i], algoritmo, num.size, arrayTP, i, arrayTMin, arrayTMax)}
@@ -135,8 +136,8 @@ fun algoritmoAEjecutar(array : Array<Number>, tnum: Int, algoritmo: String, num 
     var u : Double
     var suma : Double
     var desviacionEstandar : Double
-    var menorTiempo : Double = Double.MAX_VALUE
-    var mayorTiempo : Double = 0.0
+    var menorTiempo : Double
+    var mayorTiempo : Double 
 
     // Se comparan los argumentos de entrada para ejecutar el algoritmo correspondiente
     val division = algoritmo.split(",")
@@ -148,7 +149,9 @@ fun algoritmoAEjecutar(array : Array<Number>, tnum: Int, algoritmo: String, num 
 
     for (i in 0 until division.size) {
         
-        
+        menorTiempo = Double.MAX_VALUE
+        mayorTiempo = 0.0
+
         // Se comparan los argumentos de entrada para ejecutar el algoritmo correspondiente
         if (division[i] == "is") {
             println("-------------------------------------")
@@ -172,7 +175,7 @@ fun algoritmoAEjecutar(array : Array<Number>, tnum: Int, algoritmo: String, num 
                 h++
                 println("")
             }
-
+            
             // Se calcula la desviacion estandar
             u = timeProm/tnum
             suma = 0.0
@@ -208,7 +211,7 @@ fun algoritmoAEjecutar(array : Array<Number>, tnum: Int, algoritmo: String, num 
                 h++
                 println("")
             }
-
+            
             // Se calcula la desviacion estandar
             u = timeProm/tnum
             suma = 0.0
