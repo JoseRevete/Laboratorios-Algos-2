@@ -168,14 +168,11 @@ fun maxHeapify(A : Array<Number>, i : Int, heapSize : Int) : Unit {
 * ensures: result != null && (forall int i; 0 <= i < result.size-1; result[i] <= result[i+1])
 */
 fun quicksort(A: Array<Number>) : Array<Number> {
-    println(" array antes de quicksort: " + A[0].toString()+" "+A[1].toString()+" "+A[2].toString()+" "+A[3].toString()+" "+A[4].toString()+" "+A[5].toString())
     quicksortAux(A, 0, A.size - 1)
-    println(" array despues de quicksort: " + A[0].toString()+" "+A[1].toString()+" "+A[2].toString()+" "+A[3].toString()+" "+A[4].toString()+" "+A[5].toString())
     return A
 }
 
 fun quicksortAux(A: Array<Number>, start: Int, end: Int) : Array<Number> {
-    println(" start: " + start.toString() + " end: " + end.toString())
     if (start < end) {
         val q = particion(A, start, end)
         quicksortAux(A, start, q - 1)
