@@ -21,11 +21,11 @@ fun main(args: Array<String>) : Unit {
             else if (args[i] == "-n") {number = args[i +1]}
             else if (args[i] == "-g") {name = args[i +1]
                             verificar = true}
-            else {println("Error al indicar los argumentos")
+            else {println("Error al indicar los argumentos, recordar que los argumentos de entrada son: -t, -s, -a, -n, -g (-g es opcional)")
                 exitProcess(1)} 
         } // Si no se ingresan los argumentos de entrada correctamente, se imprime un mensaje de error
         catch(e: Exception) {
-            println("Error al indicar los argumentos")
+            println("Error al indicar los argumentos, recordar que cada flag debe tener un argumento de entrada")
             exitProcess(1)}        
     }
 
@@ -35,11 +35,11 @@ fun main(args: Array<String>) : Unit {
     for (i in 0 until num.size) {
         try {
             // Se verifica que los argumentos de entrada sean correctos
-            if (tnum < 0 || num[i] < 0) {println("Error al indicar los argumentos")
+            if (tnum < 0 || num[i] < 0) {println("Error al indicar los argumentos, recordar que los argumentos de -t y -n deben ser mayores a 0")
                 exitProcess(1)}
         } // Si no se ingresan los argumentos de entrada correctamente, se imprime un mensaje de error
         catch(e: Exception) {
-            println("Error al indicar los argumentos")
+            println("Error al indicar los argumentos, recordar que los argumentos de -t y -n deben ser numeros enteros positivos")
             exitProcess(1)}
     }
     
@@ -58,7 +58,7 @@ fun main(args: Array<String>) : Unit {
             else if (division[i] == "hs") { arrayNombre[g] = "Heap Sort"}
             else if (division[i] == "qc") { arrayNombre[g] = "Quick Sort Clasico"}
             else if (division[i] == "qd") { arrayNombre[g] = "Dual-Pivot Quick Sort"}
-            else {println("Error al indicar los argumentos")
+            else {println("Error al indicar los argumentos, recordar que los algoritmos de entrada son: ms, mi, is, bs, hs, qc, qd")
                 exitProcess(1)}
             g++
         }}
@@ -83,7 +83,7 @@ fun main(args: Array<String>) : Unit {
         else if (secuencia == "inv") {arrayTiempos = inv(tnum, num[i], algoritmo, num.size, arrayTP, i, arrayTMin, arrayTMax)}
         else if (secuencia == "zu") {arrayTiempos = zu(tnum, num[i], algoritmo, num.size, arrayTP, i, arrayTMin, arrayTMax)}
         else if (secuencia == "media") {arrayTiempos = media(tnum, num[i], algoritmo, num.size, arrayTP, i, arrayTMin, arrayTMax)}
-        else {println("Error al indicar los argumentos")
+        else {println("Error al indicar los argumentos, recordar que las secuencias de entrada son: random, randomd, sorted, sortedd, inv, zu, media")
             exitProcess(1)}
     }
     g = 0
@@ -108,10 +108,13 @@ fun main(args: Array<String>) : Unit {
             arrayTiempos.first,
             arrayTiempos.second,
             arrayTiempos.third)}
-    else if (verificar == true && num.size <= 1) { println("Error al indicar los argumentos")
+    else if (verificar == true && num.size <= 1) { println("Error al indicar los argumentos, recordar que se debe ingresar mas de un numero de elementos para generar la grafica")
         exitProcess(1)}
     else {}
 }
+
+
+
 
 // Funcion que verifica si un arreglo esta ordenado de forma ascendente
 /**
@@ -127,294 +130,174 @@ fun estaEnOrdenAscendente(secuencia: Array<Number>): Boolean {
     return true
 }
 
+
+
+
+
 // Funcion que ejecuta el algoritmo de ordenamiento correspondiente
 /**
 * requires: array != null && array.size > 0 && tnum >= 0 && algoritmo == "is,bs" || algoritmo == "is" || algoritmo == "bs"
 * ensures: (forall int i ; 0 <= i < array.size - 1 ; array[i] <= array[i+1])
 */
 fun algoritmoAEjecutar(array : Array<Number>, tnum: Int, algoritmo: String, num : Int, arrayTP: Array<Double>, s: Int, arrayTMin : Array<Double>, arrayTMax : Array<Double>) : Triple<Array<Double>, Array<Double>, Array<Double>> {
-    var array2 : Array<Number> 
-    var timeProm : Double = 0.0
-    var u : Double
-    var suma : Double
-    var desviacionEstandar : Double
-    var menorTiempo : Double
-    var mayorTiempo : Double 
+    var arrayAlgoritmos : Array<Double>
 
     // Se comparan los argumentos de entrada para ejecutar el algoritmo correspondiente
     val division = algoritmo.split(",")
     val copies = Array(tnum*division.size) { array.copyOf() }
     val copiasTiempo = Array(tnum*division.size) { 0.0 }
-
     var k = s
     var h = 0
 
     for (i in 0 until division.size) {
-        
-        menorTiempo = Double.MAX_VALUE
-        mayorTiempo = 0.0
-
-        // Se comparan los argumentos de entrada para ejecutar el algoritmo correspondiente
-        if (division[i] == "is") {
-            println("-------------------------------------")
-            println("")
-            // Se crean copias del arreglo original para ejecutar los algoritmos
-            timeProm = 0.0
-            // Se ejecuta el algoritmo de ordenamiento correspondiente
-            repeat(tnum) {
-                val tiemposEjecucion = measureNanoTime {array2 = insertionSort(copies[h])}
-                val elapsedTime1 = tiemposEjecucion.toDouble() / 1000000000.0
-                copiasTiempo[h] = elapsedTime1.toDouble()
-                println("Insertion Sort ---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
-                // Se verifica que el arreglo este ordenado de forma ascendente
-                if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
-                else {println("El arreglo no está ordenado")
-                    exitProcess(1)}
-                timeProm += elapsedTime1
-                // Se guardan los tiempos de ejecucion mas cortos y mas largos
-                if (elapsedTime1 < menorTiempo) {menorTiempo = elapsedTime1.toDouble()}
-                if (elapsedTime1 > mayorTiempo) {mayorTiempo = elapsedTime1.toDouble()}
-                h++
-                println("")
-            }
-            
-            // Se calcula la desviacion estandar
-            u = timeProm/tnum
-            suma = 0.0
-            for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
-            desviacionEstandar = kotlin.math.sqrt(suma/tnum)
-
-            // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
-            if (tnum > 1) {println("Tiempo promedio Insertion Sort: " + (timeProm/tnum).toString() + " segundos")
-            println("Desviación estándar Insertion Sort: " + desviacionEstandar.toString())}
-            println("")
-        }
-
-        // Se comparan los argumentos de entrada para ejecutar el algoritmo correspondiente
-        else if (division[i] == "bs") {
-            println("-------------------------------------")
-            println("")
-            // Se crean copias del arreglo original para ejecutar los algoritmos
-            timeProm = 0.0
-            // Se ejecuta el algoritmo de ordenamiento correspondiente
-            repeat(tnum) {
-                val tiempoEjecucion = measureNanoTime {array2 = bubbleSort(copies[h])}
-                val elapsedTime2 = tiempoEjecucion.toDouble() / 1000000000.0
-                copiasTiempo[h] = elapsedTime2.toDouble()
-                println("Bubble Sort ---> Tiempo transcurrido: " + elapsedTime2.toString() + " segundos")
-                // Se verifica que el arreglo este ordenado de forma ascendente
-                if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
-                else {println("El arreglo no está ordenado")
-                    exitProcess(1)}
-                timeProm += elapsedTime2
-                // Se guardan los tiempos de ejecucion mas cortos y mas largos
-                if (elapsedTime2 < menorTiempo) {menorTiempo = elapsedTime2.toDouble()}
-                if (elapsedTime2 > mayorTiempo) {mayorTiempo = elapsedTime2.toDouble()}
-                h++
-                println("")
-            }
-            
-            // Se calcula la desviacion estandar
-            u = timeProm/tnum
-            suma = 0.0
-            for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
-            desviacionEstandar = kotlin.math.sqrt(suma/tnum)
-
-            // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
-            if (tnum > 1) {println("Tiempo promedio Bubble Sort: " + (timeProm/tnum).toString() + " segundos")
-            println("Desviación estándar Bubble Sort: " + desviacionEstandar.toString())}
-            println("")
-        }
-
-        else if (division[i] == "ms") {
-            println("-------------------------------------")
-            println("")
-            // Se crean copias del arreglo original para ejecutar los algoritmos
-            timeProm = 0.0
-            // Se ejecuta el algoritmo de ordenamiento correspondiente
-            repeat(tnum) {
-                val tiempoEjecucion = measureNanoTime {array2 = mergeSort(copies[h])}
-                val elapsedTime3 = tiempoEjecucion.toDouble() / 1000000000.0
-                copiasTiempo[h] = elapsedTime3.toDouble()
-                println("Merge Sort ---> Tiempo transcurrido: " + elapsedTime3.toString() + " segundos")
-                // Se verifica que el arreglo este ordenado de forma ascendente
-                if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
-                else {println("El arreglo no está ordenado")
-                    exitProcess(1)}
-                timeProm += elapsedTime3
-                // Se guardan los tiempos de ejecucion mas cortos y mas largos
-                if (elapsedTime3 < menorTiempo) {menorTiempo = elapsedTime3.toDouble()}
-                if (elapsedTime3 > mayorTiempo) {mayorTiempo = elapsedTime3.toDouble()}
-                h++
-                println("")
-            }
-
-            // Se calcula la desviacion estandar
-            u = timeProm/tnum
-            suma = 0.0
-            for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
-            desviacionEstandar = kotlin.math.sqrt(suma/tnum)
-
-            // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
-            if (tnum > 1) {println("Tiempo promedio Merge Sort: " + (timeProm/tnum).toString() + " segundos")
-            println("Desviación estándar Merge Sort: " + desviacionEstandar.toString())}
-            println("")
-        }
-
-        else if (division[i] == "mi") {
-            println("-------------------------------------")
-            println("")
-            // Se crean copias del arreglo original para ejecutar los algoritmos
-            timeProm = 0.0
-            // Se ejecuta el algoritmo de ordenamiento correspondiente
-            repeat(tnum) {
-                val tiempoEjecucion = measureNanoTime {array2 = mergeSortIterativo(copies[h])}
-                val elapsedTime4 = tiempoEjecucion.toDouble() / 1000000000.0
-                copiasTiempo[h] = elapsedTime4.toDouble()
-                println("Merge Sort Iterativo---> Tiempo transcurrido: " + elapsedTime4.toString() + " segundos")
-                // Se verifica que el arreglo este ordenado de forma ascendente
-                if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
-                else {println("El arreglo no está ordenado")
-                    exitProcess(1)}
-                timeProm += elapsedTime4
-                // Se guardan los tiempos de ejecucion mas cortos y mas largos
-                if (elapsedTime4 < menorTiempo) {menorTiempo = elapsedTime4.toDouble()}
-                if (elapsedTime4 > mayorTiempo) {mayorTiempo = elapsedTime4.toDouble()}
-                h++
-                println("")
-            }
-
-            // Se calcula la desviacion estandar
-            u = timeProm/tnum
-            suma = 0.0
-            for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
-            desviacionEstandar = kotlin.math.sqrt(suma/tnum)
-
-            // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
-            if (tnum > 1) {println("Tiempo promedio Merge Sort Iterativo: " + (timeProm/tnum).toString() + " segundos")
-            println("Desviación estándar Merge Sort Iterativo: " + desviacionEstandar.toString())}
-            println("")
-        }
-
-        else if (division[i] == "hs") {
-            println("-------------------------------------")
-            println("")
-            // Se crean copias del arreglo original para ejecutar los algoritmos
-            timeProm = 0.0
-            // Se ejecuta el algoritmo de ordenamiento correspondiente
-            repeat(tnum) {
-                val tiempoEjecucion = measureNanoTime {array2 = heapSort(copies[h])}
-                val elapsedTime5 = tiempoEjecucion.toDouble() / 1000000000.0
-                copiasTiempo[h] = elapsedTime5.toDouble()
-                println("Heap Sort---> Tiempo transcurrido: " + elapsedTime5.toString() + " segundos")
-                // Se verifica que el arreglo este ordenado de forma ascendente
-                if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
-                else {println("El arreglo no está ordenado")
-                    exitProcess(1)}
-                timeProm += elapsedTime5
-                // Se guardan los tiempos de ejecucion mas cortos y mas largos
-                if (elapsedTime5 < menorTiempo) {menorTiempo = elapsedTime5.toDouble()}
-                if (elapsedTime5 > mayorTiempo) {mayorTiempo = elapsedTime5.toDouble()}
-                h++
-                println("")
-            }
-
-            // Se calcula la desviacion estandar
-            u = timeProm/tnum
-            suma = 0.0
-            for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
-            desviacionEstandar = kotlin.math.sqrt(suma/tnum)
-
-            // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
-            if (tnum > 1) {println("Tiempo promedio Heap Sort: " + (timeProm/tnum).toString() + " segundos")
-            println("Desviación estándar Heap Sort: " + desviacionEstandar.toString())}
-            println("")
-        }
-
-        // Se comparan los argumentos de entrada para ejecutar el algoritmo correspondiente
-        else if (division[i] == "qc") {
-            println("-------------------------------------")
-            println("")
-            // Se crean copias del arreglo original para ejecutar los algoritmos
-            timeProm = 0.0
-            // Se ejecuta el algoritmo de ordenamiento correspondiente
-            repeat(tnum) {
-                val tiempoEjecucion = measureNanoTime {array2 = quicksort(copies[h])}
-                val elapsedTime2 = tiempoEjecucion.toDouble() / 1000000000.0
-                copiasTiempo[h] = elapsedTime2.toDouble()
-                println("QuickSort Clasico ---> Tiempo transcurrido: " + elapsedTime2.toString() + " segundos")
-                // Se verifica que el arreglo este ordenado de forma ascendente
-                if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
-                else {println("El arreglo no está ordenado")
-                    exitProcess(1)}
-                timeProm += elapsedTime2
-                // Se guardan los tiempos de ejecucion mas cortos y mas largos
-                if (elapsedTime2 < menorTiempo) {menorTiempo = elapsedTime2.toDouble()}
-                if (elapsedTime2 > mayorTiempo) {mayorTiempo = elapsedTime2.toDouble()}
-                h++
-                println("")
-            }
-            
-            // Se calcula la desviacion estandar
-            u = timeProm/tnum
-            suma = 0.0
-            for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
-            desviacionEstandar = kotlin.math.sqrt(suma/tnum)
-
-            // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
-            if (tnum > 1) {println("Tiempo promedio QuickSort Clasico: " + (timeProm/tnum).toString() + " segundos")
-            println("Desviación estándar QuickSort Clasico: " + desviacionEstandar.toString())}
-            println("")
-        }
-
-        // Se comparan los argumentos de entrada para ejecutar el algoritmo correspondiente
-        else if (division[i] == "qd") {
-            println("-------------------------------------")
-            println("")
-            // Se crean copias del arreglo original para ejecutar los algoritmos
-            timeProm = 0.0
-            // Se ejecuta el algoritmo de ordenamiento correspondiente
-            repeat(tnum) {
-                val tiempoEjecucion = measureNanoTime {array2 = dualPivotQuicksort(copies[h])}
-                val elapsedTime2 = tiempoEjecucion.toDouble() / 1000000000.0
-                copiasTiempo[h] = elapsedTime2.toDouble()
-                println("DualPivotQuickSort ---> Tiempo transcurrido: " + elapsedTime2.toString() + " segundos")
-                // Se verifica que el arreglo este ordenado de forma ascendente
-                if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
-                else {println("El arreglo no está ordenado")
-                    exitProcess(1)}
-                timeProm += elapsedTime2
-                // Se guardan los tiempos de ejecucion mas cortos y mas largos
-                if (elapsedTime2 < menorTiempo) {menorTiempo = elapsedTime2.toDouble()}
-                if (elapsedTime2 > mayorTiempo) {mayorTiempo = elapsedTime2.toDouble()}
-                h++
-                println("")
-            }
-            
-            // Se calcula la desviacion estandar
-            u = timeProm/tnum
-            suma = 0.0
-            for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
-            desviacionEstandar = kotlin.math.sqrt(suma/tnum)
-
-            // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
-            if (tnum > 1) {println("Tiempo promedio DualPivotQuickSort: " + (timeProm/tnum).toString() + " segundos")
-            println("Desviación estándar DualPivotQuickSort: " + desviacionEstandar.toString())}
-            println("")
-        }
+        // Se ejecuta el algoritmo de ordenamiento correspondiente
+        if  (division[i] == "is" || division[i] == "bs" || division[i] == "ms" || division[i] == "mi" || division[i] == "hs" || division[i] == "qc" || division[i] == "qd") {
+            var retorno = ejecutarAlgoritmos(division[i], tnum, copies, copiasTiempo, h)
+            arrayAlgoritmos = retorno.first
+            h = retorno.second}
 
         // Si no se ingresan los argumentos de entrada correctamente, se imprime un mensaje de error
-        else {println("Error al indicar los argumentos")}
+        else {println("Error al indicar los argumentos, recordar que los algoritmos de entrada son: ms, mi, is, bs, hs, qc, qd")
+            exitProcess(1)}
+
         // Se guardan los tiempos de ejecucion
-        arrayTP[k] = timeProm/tnum
-        arrayTMin[k] = menorTiempo
-        arrayTMax[k] = mayorTiempo
+        arrayTP[k] = arrayAlgoritmos[1]
+        arrayTMin[k] = arrayAlgoritmos[0]
+        arrayTMax[k] = arrayAlgoritmos[2]
         k += num
     }
 
     var arrayTiempos = Triple(arrayTMin, arrayTP, arrayTMax)
     return arrayTiempos
 }
+
+
+
+
+
+fun ejecutarAlgoritmos(algoritmo : String, tnum: Int, copies : Array<Array<Number>>, copiasTiempo : Array<Double>, h : Int) : Pair<Array<Double>, Int> {
+    println("-------------------------------------")
+    println("")
+    // Se inicializan las variables
+    var array2 : Array<Number>
+    var menorTiempo : Double = Double.MAX_VALUE
+    var mayorTiempo : Double = 0.0
+    var u : Double
+    var suma : Double
+    var elapsedTime1 : Double
+    var desviacionEstandar : Double
+    var t = h
+    var timeProm = 0.0
+
+    // Se ejecuta el algoritmo de ordenamiento correspondiente
+    repeat(tnum) {
+        if (algoritmo == "is") {
+            // Se mide el tiempo de ejecucion
+            val tiemposEjecucion = measureNanoTime {array2 = insertionSort(copies[t])}
+            elapsedTime1 = tiemposEjecucion.toDouble() / 1000000000.0
+            copiasTiempo[t] = elapsedTime1.toDouble()
+            println("Insertion Sort ---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
+        }
+        else if (algoritmo == "bs") {
+            // Se mide el tiempo de ejecucion
+            val tiempoEjecucion = measureNanoTime {array2 = bubbleSort(copies[t])}
+            elapsedTime1 = tiempoEjecucion.toDouble() / 1000000000.0
+            copiasTiempo[t] = elapsedTime1.toDouble()
+            println("Bubble Sort ---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
+        }
+        else if (algoritmo == "ms") {
+            // Se mide el tiempo de ejecucion
+            val tiempoEjecucion = measureNanoTime {array2 = mergeSort(copies[t])}
+            elapsedTime1 = tiempoEjecucion.toDouble() / 1000000000.0
+            copiasTiempo[t] = elapsedTime1.toDouble()
+            println("Merge Sort ---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
+        }
+        else if (algoritmo == "mi") {
+            // Se mide el tiempo de ejecucion
+            val tiempoEjecucion = measureNanoTime {array2 = mergeSortIterativo(copies[t])}
+            elapsedTime1 = tiempoEjecucion.toDouble() / 1000000000.0
+            copiasTiempo[t] = elapsedTime1.toDouble()
+            println("Merge Sort Iterativo---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
+        }
+        else if (algoritmo == "hs") {
+            // Se mide el tiempo de ejecucion
+            val tiempoEjecucion = measureNanoTime {array2 = heapSort(copies[t])}
+            elapsedTime1 = tiempoEjecucion.toDouble() / 1000000000.0
+            copiasTiempo[t] = elapsedTime1.toDouble()
+            println("Heap Sort---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
+        }
+        else if (algoritmo == "qc") {
+            // Se mide el tiempo de ejecucion
+            val tiempoEjecucion = measureNanoTime {array2 = quicksort(copies[t])}
+            elapsedTime1 = tiempoEjecucion.toDouble() / 1000000000.0
+            copiasTiempo[t] = elapsedTime1.toDouble()
+            println("QuickSort Clasico ---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
+        }
+        else if (algoritmo == "qd") {
+            // Se mide el tiempo de ejecucion
+            val tiempoEjecucion = measureNanoTime {array2 = dualPivotQuicksort(copies[t])}
+            elapsedTime1 = tiempoEjecucion.toDouble() / 1000000000.0
+            copiasTiempo[t] = elapsedTime1.toDouble()
+            println("DualPivotQuickSort ---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos")
+        }
+        else {println("Error al indicar los argumentos")
+            exitProcess(1)}
+
+        // Se verifica que el arreglo este ordenado de forma ascendente
+        if (estaEnOrdenAscendente(array2)) {println("El arreglo está ordenado")}
+        else {println("El arreglo no está ordenado")
+            exitProcess(1)}
+        timeProm += elapsedTime1
+        // Se guardan los tiempos de ejecucion mas cortos y mas largos
+        if (elapsedTime1 < menorTiempo) {menorTiempo = elapsedTime1.toDouble()}
+        if (elapsedTime1 > mayorTiempo) {mayorTiempo = elapsedTime1.toDouble()}
+        t++
+        println("")
+    }
+
+    // Se calcula la desviacion estandar
+    u = timeProm/tnum
+    suma = 0.0
+    for (j in 0 until tnum) {suma = suma + (copiasTiempo[j] - u) * (copiasTiempo[j] - u)}
+    desviacionEstandar = kotlin.math.sqrt(suma/tnum)
+    // Se calcula el tiempo promedio de ejecucion del algoritmo si se ejecuta mas de una vez
+    if (algoritmo == "is") {
+        if (tnum > 1) {println("Tiempo promedio Insertion Sort: " + (timeProm/tnum).toString() + " segundos")
+                println("Desviación estándar Insertion Sort: " + desviacionEstandar.toString())}
+                println("")}
+    else if (algoritmo == "bs") {
+        if (tnum > 1) {println("Tiempo promedio Bubble Sort: " + (timeProm/tnum).toString() + " segundos")
+                println("Desviación estándar Bubble Sort: " + desviacionEstandar.toString())}
+                println("")}
+    else if (algoritmo == "ms") {
+        if (tnum > 1) {println("Tiempo promedio Merge Sort: " + (timeProm/tnum).toString() + " segundos")
+                println("Desviación estándar Merge Sort: " + desviacionEstandar.toString())}
+                println("")}
+    else if (algoritmo == "mi") {
+        if (tnum > 1) {println("Tiempo promedio Merge Sort Iterativo: " + (timeProm/tnum).toString() + " segundos")
+                println("Desviación estándar Merge Sort Iterativo: " + desviacionEstandar.toString())}
+                println("")}
+    else if (algoritmo == "hs") {
+        if (tnum > 1) {println("Tiempo promedio Heap Sort: " + (timeProm/tnum).toString() + " segundos")
+                println("Desviación estándar Heap Sort: " + desviacionEstandar.toString())}
+                println("")}
+    else if (algoritmo == "qc") {
+        if (tnum > 1) {println("Tiempo promedio QuickSort Clasico: " + (timeProm/tnum).toString() + " segundos")
+                println("Desviación estándar QuickSort Clasico: " + desviacionEstandar.toString())}
+                println("")}
+    else if (algoritmo == "qd") {
+        if (tnum > 1) {println("Tiempo promedio DualPivotQuickSort: " + (timeProm/tnum).toString() + " segundos")
+                println("Desviación estándar DualPivotQuickSort: " + desviacionEstandar.toString())}
+                println("")}
+    // Se guardan los tiempos de ejecucion
+    var arrayF = arrayOf(menorTiempo, timeProm/tnum, mayorTiempo)
+    var arrayFinal = Pair(arrayF, t)
+    return arrayFinal
+}
+
+
+
+
 
 // Funcion que genera arreglo con numeros aleatorios enteros
 /**
@@ -428,6 +311,8 @@ fun random(tnum: Int, N: Int, algoritmo: String, num: Int, arrayTP: Array<Double
     return arrayTiempos
 }
 
+
+
 // Funcion que genera arreglo con numeros aleatorios reales
 /**
 * requires: tnum >= 0 && N >= 0 && algoritmo == "is,bs" || algoritmo == "is" || algoritmo == "bs"
@@ -439,6 +324,8 @@ fun randomd(tnum: Int, N: Int, algoritmo: String, num: Int, arrayTP: Array<Doubl
     var arrayTiempos = algoritmoAEjecutar(A, tnum, algoritmo, num, arrayTP, i, arrayTMin, arrayTMax)
     return arrayTiempos
 }
+
+
 
 // Funcion que genera arreglo con numeros enteros ordenados de forma ascendente
 /**
@@ -452,6 +339,8 @@ fun sorted(tnum: Int, N: Int, algoritmo: String, num: Int, arrayTP: Array<Double
     return arrayTiempos
 }
 
+
+
 // Funcion que genera arreglo con numeros reales ordenados de forma ascendente
 /**
 * requires: tnum >= 0 && N >= 0 && algoritmo == "is,bs" || algoritmo == "is" || algoritmo == "bs"
@@ -463,6 +352,8 @@ fun sortedd(tnum: Int, N: Int, algoritmo: String, num: Int, arrayTP: Array<Doubl
     var arrayTiempos = algoritmoAEjecutar(A, tnum, algoritmo, num, arrayTP, i, arrayTMin, arrayTMax)
     return arrayTiempos
 }
+
+
 
 // Funcion que genera arreglo con numeros enteros ordenados de forma descendente
 /**
@@ -476,6 +367,8 @@ fun inv(tnum: Int, N: Int, algoritmo: String, num: Int, arrayTP: Array<Double>, 
     return arrayTiempos
 }
 
+
+
 // Funcion que genera arreglo con ceros y unos
 /**
 * requires: tnum >= 0 && N >= 0 && algoritmo == "is,bs" || algoritmo == "is" || algoritmo == "bs"
@@ -487,6 +380,8 @@ fun zu(tnum: Int, N: Int, algoritmo: String, num: Int, arrayTP: Array<Double>, i
     var arrayTiempos = algoritmoAEjecutar(A, tnum, algoritmo, num, arrayTP, i, arrayTMin, arrayTMax)
     return arrayTiempos
 }
+
+
 
 // Funcion que genera arreglo con numeros enteros ordenados de forma ascendente y descendente
 /**
