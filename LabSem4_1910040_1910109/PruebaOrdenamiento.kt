@@ -339,9 +339,7 @@ fun algoritmoAEjecutar(array : Array<Number>, tnum: Int, algoritmo: String, num 
             timeProm = 0.0
             // Se ejecuta el algoritmo de ordenamiento correspondiente
             repeat(tnum) {
-                println("QuickSort Clasico --->  "+copies[h][0]+" "+copies[h][1]+" "+copies[h][2]+" "+copies[h][3]+" "+copies[h][4]+" "+copies[h][5])
                 val tiempoEjecucion = measureNanoTime {array2 = quicksort(copies[h])}
-                println("QuickSort Clasico --->  "+array2[0]+" "+array2[1]+" "+array2[2]+" "+array2[3]+" "+array2[4]+" "+array2[5])
                 val elapsedTime2 = tiempoEjecucion.toDouble() / 1000000000.0
                 copiasTiempo[h] = elapsedTime2.toDouble()
                 println("QuickSort Clasico ---> Tiempo transcurrido: " + elapsedTime2.toString() + " segundos")

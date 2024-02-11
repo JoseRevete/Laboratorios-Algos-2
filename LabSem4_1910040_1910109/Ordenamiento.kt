@@ -204,18 +204,30 @@ fun particion(A: Array<Number>, p: Int, r: Int): Int {
 * requires: A != null && A.size > 0
 * ensures: result != null && (forall int i; 0 <= i < result.size-1; result[i] <= result[i+1])
 */
-fun dualPivotQuicksort(A: Array<Number>): Array<Number> {
-    if (A.size - 0 >= 1) {
-        var P = minOf(A[0].toInt() , A[A.size - 1].toInt())
-        var Q = maxOf(A[0].toInt(), A[A.size - 1].toInt())
-        var k = 1
-        var l = 1
-        var g = A.size - 1
+fun dualPivotQuicksort(A: Array<Number>) : Array<Number> {
+    dualPivotQuicksortAux(A, 0, A.size - 1)
+    return A
+}
+
+// Funcion de ordenamiento DualPivotQuickSort
+/**
+* requires: A != null && A.size > 0
+* ensures: result != null && (forall int i; 0 <= i < result.size-1; result[i] <= result[i+1])
+*/
+fun dualPivotQuicksortAux(A: Array<Number>, izq : Int, der : Int): Array<Number> {
+    var P : Number
+    var Q : Number
+    if (der - izq >= 1) {
+        if (A[izq] >= A[der]) {P = A[der]; Q = A[izq]}
+        else {P = A[izq]; Q = A[der]}
+        var k = izq + 1
+        var l = k
+        var g = der - 1
         while (k <= g) {
             if (A[k] < P) {
                 swap(A, k, l)
-                l += 1
-            } else if (A[k] >= Q) {
+                l += 1}
+            else if (A[k] >= Q) {
                 while (A[g] > Q && k < g) {
                     g -= 1
                 }
@@ -230,13 +242,13 @@ fun dualPivotQuicksort(A: Array<Number>): Array<Number> {
         }
         l -= 1
         g += 1
-        swap(A, 0, l)
-        swap(A, l, P)
-        swap(A, A.size - 1, g)
-        swap(A, g, Q)
-        dualPivotQuicksort(A.sliceArray(0 until l-1))
-        dualPivotQuicksort(A.sliceArray(l+1 until g-1))
-        dualPivotQuicksort(A.sliceArray(g+1 until A.size-1))
+        A[izq] = A[l]
+        A[l] = P
+        A[der] = A[g]
+        A[g] = Q
+        dualPivotQuicksortAux(A, izq, l-1)
+        dualPivotQuicksortAux(A, l+1, g-1)
+        dualPivotQuicksortAux(A, g+1, der)
     }
     return A
 }
