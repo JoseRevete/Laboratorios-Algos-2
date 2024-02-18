@@ -201,7 +201,7 @@ fun particion(A: Array<Number>, p: Int, r: Int): Int {
 }
 
 
-// Funcion de ordenamiento DualPivotQuickSort
+// Funcion de ordenamiento dualPivotQuickSort
 /**
 * requires: A != null && A.size > 0
 * ensures: result != null && (forall int i; 0 <= i < result.size-1; result[i] <= result[i+1])
@@ -211,7 +211,7 @@ fun dualPivotQuicksort(A: Array<Number>) : Array<Number> {
     return A
 }
 
-// Funcion de ordenamiento DualPivotQuickSort
+// Funcion de ordenamiento dualPivotQuickSort
 /**
 * requires: A != null && A.size > 0
 * ensures: result != null && (forall int i; 0 <= i < result.size-1; result[i] <= result[i+1])
@@ -256,20 +256,31 @@ fun dualPivotQuicksortAux(A: Array<Number>, izq : Int, der : Int): Array<Number>
 }
 
 
+// Funcion de ordenamiento countingSort
+/**
+* requires: A != null && A.size > 0
+* ensures: true
+*/
+
 fun countingSort(A: Array<Number>) : Array<Number> {
     return countingSortAux(A, A.size)
 }
 
-fun countingSortAux(A: Array<Number>, n: Int) : Array<Number> {
+// Funcion de ordenamiento countingSort
+/**
+* requires: A != null && A.size > 0
+* ensures: true
+*/
 
+fun countingSortAux(A: Array<Number>, n: Int) : Array<Number> {
+    
     val k = A.maxOf { it.toInt() }
     //val B = Array<Number>(n) {0}
     val B = A.copyOf()
     val C = Array<Int>(k+1) {0}
 
-
-    for (j in 0 until n) {
-
+    for (j in 0 until n) 
+    {
         val aj = A[j].toInt()
         C[aj] += 1
     }
@@ -286,6 +297,12 @@ fun countingSortAux(A: Array<Number>, n: Int) : Array<Number> {
     return B
 }
 
+
+// Funcion de ordenamiento radixSort
+/**
+* requires: A != null && A.size > 0
+* ensures true:
+*/
 
 fun radixSort(A: Array<Number>) : Array<Number> {
 
