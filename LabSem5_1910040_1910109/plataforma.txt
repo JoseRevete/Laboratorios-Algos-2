@@ -1,0 +1,9 @@
+• Sistema de operación: Windows 10 (Windows Subsystem for Linux)
+
+• Modelo de CPU: Intel Pentium G2020
+
+• Memoria RAM: 8GB DDR3
+
+• Versión del compilador Kotlin: 1.9.21
+
+• Versión de la JVM: 21.0.1 LTS
