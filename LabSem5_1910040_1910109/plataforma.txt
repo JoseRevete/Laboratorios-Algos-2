@@ -1,6 +1,6 @@
 • Sistema de operación: Windows 10 (Windows Subsystem for Linux)
 
-• Modelo de CPU: Intel Pentium G2020
+• Modelo de CPU: Intel Pentium G2020 2.90GHz
 
 • Memoria RAM: 8GB DDR3
 

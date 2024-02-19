@@ -301,7 +301,7 @@ fun countingSortAux(A: Array<Number>, n: Int) : Array<Number> {
 // Funcion de ordenamiento radixSort
 /**
 * requires: A != null && A.size > 0
-* ensures true:
+* ensures: true
 */
 
 fun radixSort(A: Array<Number>) : Array<Number> {
@@ -311,9 +311,42 @@ fun radixSort(A: Array<Number>) : Array<Number> {
 
     while (k/unidad >= 1)
     {
-        countingSortAux(A, unidad) 
+        countingSortAux2(A, unidad) 
         unidad *= 10
     }
+
+    return A
+}
+
+// Funcion de ordenamiento countingSort
+/**
+* requires: A != null && A.size > 0
+* ensures: true
+*/
+
+fun countingSortAux2(A: Array<Number>, unidad: Int) : Array<Number> {
+    
+    //val B = Array<Number>(n) {0}
+    val n = A.size
+    val B = A.copyOf()
+    val C = Array<Int>(10) {0}
+
+    for (j in 0 until n) 
+    {
+        val aj = A[j].toInt()
+        C[(aj/unidad)%10] += 1
+    }
+
+    for (i in 1 until 10) {C[i] += C[i-1]}
+
+    for (j in n-1 downTo 0)
+    {
+        val aj = A[j].toInt()
+        B[C[(aj/unidad)%10]-1] = A[j]
+        C[(aj/unidad)%10] -= 1
+    }
+
+    for(i in 0 until n) {A[i] = B[i]}
 
     return A
 }

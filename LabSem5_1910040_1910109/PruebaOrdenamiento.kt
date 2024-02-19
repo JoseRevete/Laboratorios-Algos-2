@@ -251,7 +251,7 @@ fun ejecutarAlgoritmos(algoritmo : String, tnum: Int, copies : Array<Array<Numbe
         }
         else if (algoritmo == "rs") {
             // Se mide el tiempo de ejecucion
-            val tiempoEjecucion = measureNanoTime {array2 = countingSort(copies[t])}
+            val tiempoEjecucion = measureNanoTime {array2 = radixSort(copies[t])}
             elapsedTime1 = tiempoEjecucion.toDouble() / 1000000000.0
             copiasTiempo[t] = elapsedTime1.toDouble()
             println("Radix Sort ---> Tiempo transcurrido: " + elapsedTime1.toString() + " segundos.")
