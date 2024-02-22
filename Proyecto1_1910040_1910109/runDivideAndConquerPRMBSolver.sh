@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-java -jar DivideAndConquerPRMBSolver.jar $*
+java -Xmx2g -Xss1g -jar DivideAndConquerPRMBSolver.jar $*
