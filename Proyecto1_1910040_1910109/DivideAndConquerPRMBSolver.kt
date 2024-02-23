@@ -6,7 +6,10 @@ import java.io.File
    La salida es una lista de rutas que generan el mayor beneficio posible.
    El beneficio de una ruta es la suma de las recompensas de las ciudades que la componen menos la distancia recorrida entre las ciudades.
 */
+
+// Funcion principal para ejecutar el algoritmo.
 fun main(args: Array<String>) : Unit {
+    // Se lee el archivo que contiene las coordenadas de las ciudades.
     val nombreArchivo = args[0]
     val archivo = File(nombreArchivo)
     var ciudades = archivo.bufferedReader().readLines().first().toInt()
@@ -19,41 +22,63 @@ fun main(args: Array<String>) : Unit {
     list + index }
     var coordenadas : Array<List<Int>> = coordenadass.toTypedArray()
     
+    // Se crea una matriz con las recompensas y el indice de la ciudad.
     var recompensa : Array<Array<Int>> = Array(ciudades) { Array(2) {0} }
     for (i in 0 until ciudades) {
         recompensa[i][0] = recompensaList[i]
         recompensa[i][1] = i
     }
 
-    var ruta = divideAndConquerPRMB(ciudades, coordenadas, recompensa)
-    println("La ruta que genera mas beneficio es: " + ruta.first + " con un beneficio de: " + ruta.second)
+    // Se obtiene la ruta que genera el mayor beneficio.
+    var maxX = coordenadas.maxBy { it[0] }!![0]
+    var maxY = coordenadas.maxBy { it[1] }!![1]
+    var recompensaObtenida = 0.0
+    // Se ejecuta el algoritmo divide and conquer para obtener la ruta que genere el mayor beneficio.
+    var ruta = divideAndConquerPRMB(ciudades, coordenadas, recompensa, 0.0, maxX.toDouble(), 0.0, maxY.toDouble())
+    for (i in 0 until ruta.first.split(" ").size) {
+        for (j in 0 until recompensa.size) {
+            if (ruta.first.split(" ")[i].toInt() == recompensa[j][1]) {
+                recompensaObtenida += recompensa[j][0].toDouble()
+            }
+        }
+    }
+    // Se imprime la ruta que genera el mayor beneficio y el beneficio obtenido.
+    recompensaObtenida -= ruta.second
+    // Recompesa pero con 4 decimales
+    recompensaObtenida = Math.round(recompensaObtenida * 10000.0) / 10000.0
+    println(ruta.first)
+    println(recompensaObtenida)
 }
 
 
 
 
-
-fun divideAndConquerPRMB( ciudades: Int, coordenadas: Array<List<Int>>, recompensa: Array<Array<Int>>) : Pair<String, Double>{
+// Funcion que divide el mapa en dos partes iguales y busca la ruta que genere mas beneficio.
+fun divideAndConquerPRMB( ciudades: Int, coordenadas: Array<List<Int>>, recompensa: Array<Array<Int>>, desdeX: Double, divisionX : Double, desdeY : Double, divisionY : Double) : Pair<String, Double>{
     var ruta = Pair("", 0.0)
     var suma = 0
     var divisionEnY = false
+    // Se verifica si hay mas de 3 ciudades en la misma coordenada en el eje "x".
     for (i in 0 until coordenadas.size) {
         for (j in 0 until coordenadas.size) {
-            if (coordenadas[i][1] == coordenadas[j][1] && i != j) {suma += 1}
+            if (coordenadas[i][0] == coordenadas[j][0] && i != j) {suma += 1}
         }
         if (suma > 3) {divisionEnY = true}
     }
 
+    // Se verifica si hay 3 o menos ciudades en el mapa.
     if (0 < ciudades && ciudades <= 3) {
         ruta = resolverMiniPRMB(coordenadas, recompensa)}
     else if (ciudades == 0){}
     else {
 
+        // Se verifica si se debe dividir el mapa en el eje "y" o en el eje "x".
         if (divisionEnY) {
-            var maxY = coordenadas.maxBy { it[1] }!![1]
-            var maxYmitad = maxY / 2
-            var coordenadasArriba = coordenadas.filter { it[1] <= maxYmitad }
-            var coordenadasAbajo = coordenadas.filter { it[1] > maxYmitad }
+            // Se divide el mapa en dos partes iguales en el eje "y".
+            var maxYmitad = (divisionY - desdeY) / 2 + desdeY
+            // Se obtienen las coordenadas de las ciudades que se encuentran en la parte de abajo y en la parte de arriba del mapa.
+            var coordenadasAbajo = coordenadas.filter { it[1] <= maxYmitad }
+            var coordenadasArriba = coordenadas.filter { it[1] > maxYmitad }
             var recompensaArriba = MutableList(coordenadasArriba.size) { arrayOf(0, 0) }
             var recompensaAbajo = MutableList(coordenadasAbajo.size) { arrayOf(0, 0)}
             var i = 0
@@ -79,15 +104,18 @@ fun divideAndConquerPRMB( ciudades: Int, coordenadas: Array<List<Int>>, recompen
             
             var coordenadasArribaa = coordenadasArriba.toTypedArray()
             var coordenadasAbajoo = coordenadasAbajo.toTypedArray()
-            var rutaArriba = divideAndConquerPRMB(coordenadasArriba.size, coordenadasArribaa, recompensaArriba.toTypedArray())
-            var rutaAbajo = divideAndConquerPRMB(coordenadasAbajo.size, coordenadasAbajoo, recompensaAbajo.toTypedArray())
+            // Se obtiene la ruta que genera el mayor beneficio en la parte de arriba y en la parte de abajo del mapa ejecutando el algoritmo divide and conquer.
+            var rutaArriba = divideAndConquerPRMB(coordenadasArriba.size, coordenadasArribaa, recompensaArriba.toTypedArray(), desdeX, divisionX, maxYmitad.toDouble(), divisionY)
+            var rutaAbajo = divideAndConquerPRMB(coordenadasAbajo.size, coordenadasAbajoo, recompensaAbajo.toTypedArray(), desdeX, divisionX, desdeY, maxYmitad.toDouble())
+            // Se unen las rutas obtenidas en la parte de arriba y en la parte de abajo del mapa.
             ruta = unirRutasCasos(rutaArriba, rutaAbajo, coordenadasArribaa, coordenadasAbajoo)
         }
 
 
         else {
-            var maxX = coordenadas.maxBy { it[0] }!![0]
-            var maxXmitad = maxX / 2
+            // Se divide el mapa en dos partes iguales en el eje "x".
+            var maxXmitad = (divisionX - desdeX) / 2 + desdeX
+            // Se obtienen las coordenadas de las ciudades que se encuentran en la parte de la izquierda y en la parte de la derecha del mapa.
             var coordenadasIzq = coordenadas.filter { it[0] <= maxXmitad }
             var coordenadasDer = coordenadas.filter { it[0] > maxXmitad }
             var recompensaIzq = MutableList(coordenadasIzq.size) { arrayOf(0, 0) }
@@ -115,8 +143,10 @@ fun divideAndConquerPRMB( ciudades: Int, coordenadas: Array<List<Int>>, recompen
             
             var coordenadasIzqq = coordenadasIzq.toTypedArray()
             var coordenadasDerr = coordenadasDer.toTypedArray()
-            var rutaIzq = divideAndConquerPRMB(coordenadasIzq.size, coordenadasIzqq, recompensaIzq.toTypedArray())
-            var rutaDer = divideAndConquerPRMB(coordenadasDer.size, coordenadasDerr, recompensaDer.toTypedArray())
+            // Se obtiene la ruta que genera el mayor beneficio en la parte de la izquierda y en la parte de la derecha del mapa ejecutando el algoritmo divide and conquer.
+            var rutaIzq = divideAndConquerPRMB(coordenadasIzq.size, coordenadasIzqq, recompensaIzq.toTypedArray(), desdeX, maxXmitad.toDouble(), desdeY, divisionY)
+            var rutaDer = divideAndConquerPRMB(coordenadasDer.size, coordenadasDerr, recompensaDer.toTypedArray(), maxXmitad.toDouble(), divisionX, desdeY, divisionY)
+            // Se unen las rutas obtenidas en la parte de la izquierda y en la parte de la derecha del mapa.
             ruta = unirRutasCasos(rutaIzq, rutaDer, coordenadasIzqq, coordenadasDerr)
         }
     }
@@ -125,22 +155,23 @@ fun divideAndConquerPRMB( ciudades: Int, coordenadas: Array<List<Int>>, recompen
 
 
 
-
+// Funcion que resuelve el problema de entre 3 o menos ciudades.
 fun resolverMiniPRMB(coordenadas: Array<List<Int>>, recompensa: Array<Array<Int>>) : Pair<String, Double> {
     val ciudades = coordenadas.size
     var ruta = Pair("", 0.0)
+    // Se verifica si hay 1, 2 o 3 ciudades en el mapa.
     if (ciudades == 1) {
         var ganancia = recompensa[0][0]
         ruta = Pair(coordenadas[0][2].toString(), ganancia.toDouble())
     }
     else if (ciudades == 2) {
         var ganancia = gananciaRuta(coordenadas, recompensa)
-        
+        // Se obtiene la ruta que genera el mayor beneficio.
         if (ganancia.second > recompensa[0][0]) {
             if (ganancia.second > recompensa[1][0]) {
                 ruta = ganancia
                 }
-            else {ruta = Pair(coordenadas[0][1].toString(), recompensa[0][0].toDouble())}
+            else {ruta = Pair(coordenadas[0][2].toString(), recompensa[0][0].toDouble())}
         } else {
             if (recompensa[1][0] > recompensa[0][0]) {
                 ruta = Pair(coordenadas[1][2].toString(), recompensa[1][0].toDouble())}
@@ -148,20 +179,22 @@ fun resolverMiniPRMB(coordenadas: Array<List<Int>>, recompensa: Array<Array<Int>
         }
     }
     else if (ciudades == 3) {
+        // Se obtiene la ganancia de las rutas que se pueden formar con las ciudades.
         var ganancia12 = gananciaRuta(coordenadas.sliceArray(0 until 2), recompensa.sliceArray(0 until 2))
         var ganancia23 = gananciaRuta(coordenadas.sliceArray(1 until 3), recompensa.sliceArray(1 until 3))
         var ganancia13 = gananciaRuta(coordenadas.slice(listOf(0, 2)).toTypedArray(), recompensa.slice(listOf(0, 2)).toTypedArray())
         var ruta12 = ganancia12.first.split(" ")
         var ruta23 = ganancia23.first.split(" ")
         var ruta13 = ganancia13.first.split(" ")
-        var ganancia123 = Pair(ganancia12.first+" " + ruta23[1], ganancia12.second + ganancia23.second)
-        var ganancia132 = Pair(ganancia13.first+" " + ruta23[0] , ganancia13.second + ganancia23.second)
-        var ganancia213 = Pair(ruta12[1]+" "+ ganancia13.first, ganancia12.second + ganancia13.second)
+        var ganancia123 = Pair(ganancia12.first+" " + ruta23[1], ganancia12.second + ganancia23.second - recompensa[1][0])
+        var ganancia132 = Pair(ganancia13.first+" " + ruta23[0] , ganancia13.second + ganancia23.second - recompensa[2][0] )
+        var ganancia213 = Pair(ruta12[1]+" "+ ganancia13.first, ganancia12.second + ganancia13.second - recompensa[0][0])
 
         var ruta1 = Pair("", 0.0)
         var ruta2 = Pair("", 0.0)
         var ruta3 = Pair("", 0.0)
 
+        // Se obtiene la ruta que genera el mayor beneficio.
         if (ganancia123.second > ganancia132.second) {
             if (ganancia123.second > ganancia213.second) {
                 ruta3 = Pair(ganancia123.first, ganancia123.second)}
@@ -202,10 +235,12 @@ fun resolverMiniPRMB(coordenadas: Array<List<Int>>, recompensa: Array<Array<Int>
             else {ruta = ruta3}
         }
     }
-    else {println("Error1")}
+    else {println("Error")}
     return ruta
 }
 
+
+// Funcion que obtiene la ganancia de una ruta.
 fun gananciaRuta(coordenadas: Array<List<Int>>, recompensa: Array<Array<Int>>) : Pair<String, Double> {
     var ganancia = 0.0
     var premio = 0.0
@@ -222,6 +257,8 @@ fun gananciaRuta(coordenadas: Array<List<Int>>, recompensa: Array<Array<Int>>) :
     return rutaGanancia
 }
 
+
+// Funcion que obtiene el costo de una ruta.
 fun costo(coordenadas: Array<List<Int>>) : Double {
     var cost = 0.0
     for (i in 0 until coordenadas.size - 1) {
@@ -230,58 +267,132 @@ fun costo(coordenadas: Array<List<Int>>) : Double {
     return cost
 }
 
+
+// Clase para guardar las coordenadas de las ciudades.
+data class Ciudad(var array: Array<Int>, var entero: Int, var booleano: Boolean)
+
 // Funcion para unir las rutas.
 fun unirRutasCasos(rutaIzq: Pair<String, Double>, rutaDer: Pair<String, Double>, coordenadasIzq : Array<List<Int>>, coordenadasDer : Array<List<Int>>) : Pair<String, Double> {
     var ruta = Pair("", 0.0)
-    var rutaPrincipio = (rutaIzq.first +" "+ rutaDer.first).split(" ")
+    var rutaPrincipio : List<String>
+    // Se unen las rutas obtenidas en la parte de la izquierda y en la parte de la derecha del mapa.
+    if (rutaIzq.first == "") {rutaPrincipio = rutaDer.first.split(" ")}
+    else if (rutaDer.first == "") {rutaPrincipio = rutaIzq.first.split(" ")}
+    else {rutaPrincipio = (rutaIzq.first +" "+ rutaDer.first).split(" ")}
+    
     var rutaGananciaPrincipio = 0.0
-    var rutasPermutadas = permutaciones(rutaPrincipio)
+    // Se unen las coordenadas de las ciudades obtenidas en la parte de la izquierda y en la parte de la derecha del mapa.
     var coordenadas = coordenadasIzq + coordenadasDer
-    var mayorGanancia = 0.0
-    var indice = 0
-    var i = 0
+    var datosCiudades = MutableList(rutaPrincipio.size) { Ciudad(Array<Int>(3) { 0 }, 0, false) }
 
-
-    for (permutaciones in rutasPermutadas) {
-        var c1 = coordenadasIzq[0]
-        var c2 = coordenadasDer[0]
-        for (i in 0 until permutaciones.size - 1) {
-            for (j in 0 until coordenadas.size) {
-                if (coordenadas[j][2] == permutaciones[i].toInt()) {c1 = coordenadas[j]}
-                if (coordenadas[j][2] == permutaciones[i+1].toInt()) {c2 = coordenadas[j]}
+    // Se guardan las coordenadas de las ciudades obtenidas en la parte de la izquierda y en la parte de la derecha del mapa y si estas ciudades ya fueron visitadas.
+    for  (i in 0 until rutaPrincipio.size) {
+        for (j in 0 until coordenadas.size) {
+            if (coordenadas[j][2] == rutaPrincipio[i].toInt()) {
+                datosCiudades[i].array = coordenadas[j].toTypedArray()
+                datosCiudades[i].entero = coordenadas[j][2]
+                datosCiudades[i].booleano = false
             }
-            mayorGanancia += c1[2] + c2[2] - costo(arrayOf(c1, c2))
         }
-
-        if (mayorGanancia > rutaGananciaPrincipio) {
-            rutaGananciaPrincipio = mayorGanancia
-            indice = i}
-        i++
     }
 
-    if (mayorGanancia > rutaIzq.second) {
-        if (mayorGanancia > rutaDer.second) {ruta = Pair(rutasPermutadas[indice].joinToString(" "), mayorGanancia)}
-        else {ruta = rutaDer}
-    
-    } else {
-        if (rutaDer.second > rutaIzq.second) {ruta = rutaDer}
-        else {ruta = rutaIzq}
+    // Se crea una copia de las coordenadas de las ciudades obtenidas en la parte de la izquierda y en la parte de la derecha del mapa.
+    val numeroDeCopias = rutaPrincipio.size
+    val copiasDeDatosCiudades = MutableList(numeroDeCopias) { datosCiudades.toMutableList() }
+    var costoMinimo = Double.MAX_VALUE
+    for (i in 0 until rutaPrincipio.size) {
+        // Se llama a la funcion que escoge el vecino que genere el menor costo.
+        var rutas = escogerVecino(rutaPrincipio[i].toInt() , copiasDeDatosCiudades[i], rutaPrincipio)
+        if (rutas.second < costoMinimo) {
+            costoMinimo = rutas.second
+            ruta = Pair(rutas.first, costoMinimo)}
     }
     return ruta
+}                
+
+
+
+// Funcion que verifica si todas las ciudades ya fueron visitadas.
+fun todasVisitadas(booleano: BooleanArray) : Boolean {
+    var todas = true
+    for (i in 0 until booleano.size) {
+        if (booleano[i] == false) {todas = false}
+    }
+    return todas
 }
 
-fun permutaciones(rutaPrincipio: List<String>): List<List<String>> {
-    if (rutaPrincipio.size == 1) return listOf(rutaPrincipio)
 
-    val permutacion = mutableListOf<List<String>>()
-    val caracter = rutaPrincipio[0]
-    val rem = rutaPrincipio.drop(1)
-    for (perm in permutaciones(rem)) {
-        for (i in 0..perm.size) {
-            val nuevaPermutacion = perm.toMutableList()
-            nuevaPermutacion.add(i, caracter)
-            permutacion.add(nuevaPermutacion)
-        }
+// Funcion que obtiene la distancia entre dos ciudades.
+fun costoRuta(ciudad: Array<Int>, rutas: Array<Array<Int>>) : Array<Array<Any>> {
+    var distancia = Array(rutas.size) { Array<Any>(2) {0} }
+    for (i in 0 until rutas.size) {
+        distancia[i][0] = rutas[i][2]
+        distancia[i][1] = costo(arrayOf(ciudad.toList(), rutas[i].toList()))
     }
-    return permutacion
+    return distancia
+}
+
+
+// Funcion que escoge el vecino que genere el menor costo.
+fun escogerVecino(ciudadComienzo : Int, datosCiudades: MutableList<Ciudad>, rutaPrincipio: List<String>) : Pair<String, Double> {
+    var i = 1
+    var ciudad = ciudadComienzo
+    var costo = 0.0
+    var ciudades = "" + ciudad.toString() + " "
+    // Se inicializa el booleano de las ciudades.
+    datosCiudades.forEach { it.booleano = false }
+    while (i < rutaPrincipio.size) {
+        var rutasCaR1 = Array<Int>(3) {0}
+        var rutasCaR2 = Array<Array<Int>>(rutaPrincipio.size - i) { Array<Int>(3) {0} }
+        var k = 0
+        // Se obtienen las rutas que se pueden formar con las ciudades que no han sido visitadas.
+        if (i == 1) {
+            for (j in 0 until rutaPrincipio.size) {
+                if (ciudad == datosCiudades[j].entero) {
+                    rutasCaR1 = datosCiudades[j].array
+                    datosCiudades[j].booleano = true
+                    break}
+            }
+        }
+        else {
+            for (j in 0 until rutaPrincipio.size) {
+                if (ciudad == datosCiudades[j].entero) {
+                    rutasCaR1 = datosCiudades[j].array
+                    datosCiudades[j].booleano = true
+                }
+            }
+        }
+
+        for (j in 0 until rutaPrincipio.size) {
+            if (datosCiudades[j].booleano == false && datosCiudades[j].entero != ciudad) {
+                rutasCaR2[k] = datosCiudades[j].array
+                k++
+            }
+        }
+        // Se obtiene la ruta que genere el menor costo.
+        var ruta = distancias(Pair(rutasCaR1, rutasCaR2))
+        ciudad = ruta.first
+        costo += ruta.second
+        if (i == rutaPrincipio.size - 1) {ciudades += ciudad.toString()}
+        else {ciudades += ciudad.toString() + " "}
+
+        i++
+        // Se verifica si todas las ciudades ya fueron visitadas.
+        if (datosCiudades.all { it.booleano }) { break }
+        
+    }
+    return Pair(ciudades, costo)
+}
+
+
+// Funcion que obtiene la distancia entre dos ciudades.
+fun distancias(rutasCaR: Pair<Array<Int>, Array<Array<Int>>>) : Pair<Int, Double> {
+    var distancia : Array<Array<Any>> = Array(rutasCaR.second.size-1) { Array<Any>(2) {0} }
+    var ciudad = rutasCaR.first
+    var rutas = rutasCaR.second
+    distancia = costoRuta(ciudad, rutas)
+    // Encontrar la ruta con menor costo en el segundo indice de la matriz distancia y guardar el indice de la ruta con menor costo.
+    var minimoCosto = distancia.minBy { it[1].toString().toDouble() }!!
+    var indice = distancia.indexOf(minimoCosto)
+    return Pair(distancia[indice][0].toString().toInt(), minimoCosto[1].toString().toDouble())
 }
