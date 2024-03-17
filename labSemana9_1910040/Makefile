@@ -1,7 +1,7 @@
 KC= kotlinc
 KFLAGS= -include-runtime
 PROG= CodificacionTelefonos.jar
-SRC=  Nodo.kt ArbolBinario.kt
+SRC=  Nodo.kt TADPila.kt ListaEnlazadaSimple.kt
 
 all:
 	$(KC) $(KFLAGS) $(SRC) -d $(PROG)
