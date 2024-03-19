@@ -1,5 +1,5 @@
 class Cola<T> {
-    private var cola = ListaEnlazadaSimple<T>()
+    private var cola = ListaDoblementeEnlazada<T>()
 
     init {
         println("Se creó una cola exitosamente")
@@ -21,7 +21,7 @@ class Cola<T> {
 
     fun desencolar(): T {
         if (estaVacia())
-            throw IllegalStateException("La cola esta vacia")
+            throw IllegalStateException("La cola está vacía")
         
         val dato = cola.primero()?.dato ?: throw NoSuchElementException("La cola está vacía.")
         cola.eliminarPrimero()
@@ -29,9 +29,19 @@ class Cola<T> {
         return dato
     }
 
+    fun desencolarUltimo(): T {
+        if (estaVacia())
+            throw IllegalStateException("La cola está vacía")
+        
+        val dato = cola.ultimo()?.dato ?: throw NoSuchElementException("La cola está vacía.")
+        cola.eliminarUltimo()
+        size--
+        return dato
+    }
+
     fun primero(): T {
         if (cola.estaVacia())
-            throw IllegalStateException("La cola esta vacia")
+            throw IllegalStateException("La cola está vacía")
         
         return cola.primero()?.dato ?: throw NoSuchElementException("La cola está vacía.")
     }
@@ -49,7 +59,7 @@ class Cola<T> {
 
         override fun next(): T {
             if(this.nodoActual == null){
-                throw NoSuchElementException("No hay mas elementos en la cola")
+                throw NoSuchElementException("No hay más elementos en la cola")
             }
             
             val dato = this.nodoActual!!.dato

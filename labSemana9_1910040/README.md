@@ -1,1 +1,7 @@
-SRC= CodificacionTelefonos.kt Nodo.kt Cola.kt TablaDeHash.kt ListaEnlazadaSimple.kt
+112
+4824
+0721/608-4067
+10/783--5
+1078-913-5
+381482
+04824
