@@ -1,7 +1,7 @@
 KC= kotlinc
 KFLAGS= -include-runtime
 PROG= CodificacionTelefonos.jar
-SRC=  Nodo.kt  ListaDoblementeEnlazada.kt Hash.kt TADCola.kt CodificacionTelefonos.kt
+SRC=  Nodo.kt  ListaDoblementeEnlazada.kt Hash.kt CodificacionTelefonos.kt
 
 all:
 	$(KC) $(KFLAGS) $(SRC) -d $(PROG)
@@ -9,4 +9,4 @@ all:
 .PHONY: clean
 
 clean:
-	rm -rf *.jar%
+	rm -rf *.jar

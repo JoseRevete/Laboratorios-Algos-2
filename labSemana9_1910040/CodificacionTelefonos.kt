@@ -63,7 +63,7 @@ fun main(args: Array<String>) : Unit {
             else {
                 nodoActual = listaTelefono.siguiente(nodoActual!!)
                 listaPrincipio.agregarAlFinal(nodoActual?.anterior?.dato!!)
-                listaPrincipio2.agregarAlFinal(nodoActual?.anterior?.dato!!)
+                listaPrincipio2.agregarAlFinal(nodoActual.anterior?.dato!!)
                 listaTelefono.eliminarPrimero()
                 listaTelefono2.eliminarPrimero()
                 codificacion2 = codificacionTelefonos(listaPrincipio, tablaHash, listaPrincipio2)
@@ -90,20 +90,18 @@ fun dameTamanoTabla(): Int {
 
 
 fun codificacionTelefonos(listaTelefono: ListaDoblementeEnlazada<String>, tablaHash: TablaHash<Array<String>>, listaOriginal : ListaDoblementeEnlazada<String>): ListaDoblementeEnlazada<String> {
-    var nodoActual = listaTelefono.primero()
     var listaT = listaTelefono
     var listaFinal = ListaDoblementeEnlazada<String>()
     var booleano = true
     if (listaT.tamano() < listaOriginal.tamano()) {
         booleano = false}
-        
     var listaDeOpciones : ListaDoblementeEnlazada<String> = ListaDoblementeEnlazada()
     var  i  = 1
     var suma = 0
     var listaTelefonoEnString = listaT.imprimir()
     listaTelefonoEnString = listaTelefonoEnString.replace(" ", "")
     for (nodo in listaT) {
-        suma += nodo.dato!!.toInt() * i
+        suma += nodo.dato.toInt() * i
         i++}
     val hash = suma % dameTamanoTabla()
     if (listaT.tamano() == 1) {
@@ -124,10 +122,6 @@ fun codificacionTelefonos(listaTelefono: ListaDoblementeEnlazada<String>, tablaH
         }}
     catch(e: NullPointerException) {}
     var z = 1
-    if (!listaDeOpciones.estaVacia()) {
-        return listaDeOpciones
-    }
-    else {
         while (z < listaOriginal.tamano()) {
             var listaUnion = ListaDoblementeEnlazada<String>()
             repeat(z) {
@@ -156,15 +150,15 @@ fun codificacionTelefonos(listaTelefono: ListaDoblementeEnlazada<String>, tablaH
                 listaT.agregarAlFinal(elemento.dato)
             }
         }
-    }
+    
     return listaDeOpciones
 }
 
 fun imprimirResultados(lista: ListaDoblementeEnlazada<String>, telefono: String) {
     for (nodo in lista) {
         var palabra = depurar(nodo.dato)
-        if (palabra == "-1") {}
-        else {println("$telefono: ${nodo.dato}")}
+        if (palabra == "-1") {continue}
+        else{println("$telefono: ${nodo.dato}")}
     }
 }
 
