@@ -162,6 +162,21 @@ fun codificacionTelefonos(listaTelefono: ListaDoblementeEnlazada<String>, tablaH
 
 fun imprimirResultados(lista: ListaDoblementeEnlazada<String>, telefono: String) {
     for (nodo in lista) {
-        println("$telefono: ${nodo.dato}")
+        var palabra = depurar(nodo.dato)
+        if (palabra == "-1") {}
+        else {println("$telefono: ${nodo.dato}")}
     }
+}
+
+fun depurar(palabra: String): String {
+    var palabraDepurada = ""
+    val caracteres = palabra.replace(" ", "").toCharArray()
+    var i = 0
+    while (i < caracteres.size -1) {
+        if (caracteres[i].isDigit() && caracteres[i+1].isDigit()) {
+            palabraDepurada = "-1"
+            break}
+        i++
+    }
+    return palabraDepurada
 }
