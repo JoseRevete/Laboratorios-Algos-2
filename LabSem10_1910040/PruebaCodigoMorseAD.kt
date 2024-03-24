@@ -1,32 +1,27 @@
-fun main(args: String) : Unit {
-    
+// Funcion: Prueba de la clase CodigoMorseAD
+fun main(args: Array<String>) : Unit {
+    // Se unen los argumentos en un solo string
+    val mensajeUnido = args.joinToString(" ")
+    // Se crea un objeto de la clase CodigoMorseAD
     val arbol = CodigoMorseAD()
-    arbol.insertar("", "E", "T")
-    arbol.insertar("E", "I", "A")
-    arbol.insertar("I", "S", "U")
-    arbol.insertar("A", "R", "W")
-    arbol.insertar("S", "H", "V")
-    arbol.insertar("U", "F", "")
-    arbol.insertar("R", "L", "")
-    arbol.insertar("W", "P", "J")
-    arbol.insertar("T", "N", "M")
-    arbol.insertar("N", "D", "K")
-    arbol.insertar("M", "G", "O")
-    arbol.insertar("D", "B", "X")
-    arbol.insertar("K", "C", "Y")
-    arbol.insertar("G", "Z", "Q")
-    arbol.insertar("O", "", "")
-
-    val mensajeSeparadoPor = args.split("/")
+    // Se llama al metodo CrearCodigoMorse para crear el arbol
+    arbol.CrearCodigoMorse()
+    // Se separa el mensaje por el caracter "/"
+    val mensajeSeparadoPor = mensajeUnido.split("/")
     var decodificacion = ""
-    var decodif = ""
+    var decodif : String
+    // Se recorre el mensaje separado por "/"
     for (i in mensajeSeparadoPor) {
         decodif = arbol.decodificarMensaje(i)
-        if (decodif == "-1") {
-            println("Error, codigo Morse no valido")
-            return
+        // Si el mensaje no es valido, se imprime un mensaje de error
+        if (decodif == "Error, codigo Morse no valido") {
+            decodificacion = decodif
+            break
         }
+        // Se concatena la decodificacion
         decodificacion += arbol.decodificarMensaje(i) + " "
     }
+    // Se elimina el espacio al final
     decodificacion = decodificacion.trim()
+    println(decodificacion)
 }
