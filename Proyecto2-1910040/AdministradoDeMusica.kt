@@ -6,7 +6,12 @@ fun main(args : Array<String>) {
     val file = File(args[0])
     val canciones = file.readLines().map { it.split(";") }
     val lista = TAD_Lista_De_Reproduccion("Mi lista")
+    println("Cargando lista de reproducción...")
     for (cancion in canciones) {
+        println("Canción0: ${cancion[0]}")
+        println("Canción1: ${cancion[1]}")
+        println("Canción2: ${cancion[2]}")
+
         var song = TAD_Cancion(cancion[0], cancion[1], cancion[2])
         lista.agregarLista(song)
     }
