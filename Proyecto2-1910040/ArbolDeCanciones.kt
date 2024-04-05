@@ -123,42 +123,6 @@ class Arbol_Canciones {
         }
         return str
     }
-
-    fun esArbolDeBusqCancion(nodo: Nodo? = raiz, minInterprete: String? = null, minTitulo: String? = null): Boolean {
-        if (nodo != null) {
-            if ((minInterprete != null && minTitulo != null) && ((nodo.c.obtenerInterprete() < minInterprete) || (nodo.c.obtenerInterprete() == minInterprete && nodo.c.obtenerTitulo() < minTitulo))) {
-                return false
-            }
-            if ((minInterprete != null && minTitulo != null) && ((nodo.c.obtenerInterprete() > minInterprete) || (nodo.c.obtenerInterprete() == minInterprete && nodo.c.obtenerTitulo() > minTitulo))) {
-                return false
-            }
-            return esArbolDeBusqCancion(nodo.izq, nodo.c.obtenerInterprete(), nodo.c.obtenerTitulo()) && esArbolDeBusqCancion(nodo.der, nodo.c.obtenerInterprete(), nodo.c.obtenerTitulo())
-        }
-        return true
-    }
-
-    fun deArbolASecuencia(nodo: Nodo? = raiz): List<TAD_Cancion> {
-        return when (nodo) {
-            null -> emptyList()
-            else -> deArbolASecuencia(nodo.izq) + nodo.c + deArbolASecuencia(nodo.der)
-        }
-    }
-
-    fun minInterprete(): String {
-        return minInterprete!!
-    }
-
-    fun maxInterprete(): String {
-        return maxInterprete!!
-    }
-
-    fun minTitulo(): String {
-        return minTitulo!!
-    }
-
-    fun maxTitulo(): String {
-        return maxTitulo!!
-    }
 }
 
 
