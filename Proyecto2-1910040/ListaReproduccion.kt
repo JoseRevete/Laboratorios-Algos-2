@@ -1,20 +1,27 @@
+// Clase que define una lista de reproducción
 class TAD_Lista_De_Reproduccion {
     var nombre: String
     var canciones: Arbol_Canciones
 
+    // Constructor de la clase
     constructor(nombre: String) {
         this.nombre = nombre
         this.canciones = Arbol_Canciones()
     }
 
+    // Función que agrega una canción a la lista de reproducción
     fun agregarLista(cancion: TAD_Cancion) {canciones.agregar(cancion)}
 
-    fun eliminarCancion(interprete: String, titulo: String) : Unit {canciones.eliminar(interprete, titulo)}
+    // Función que elimina una canción de la lista de reproducción
+    fun eliminarCancion(interprete: String, titulo: String) : Boolean {return canciones.eliminar(interprete, titulo)}
 
+    // Función que obtiene la lista de reproducción
     fun obtenerLR(): List<TAD_Cancion> {return deArbolASecuencia(canciones.raiz)}
 
+    // Función que muestra la lista de reproducción
     fun mostrarLR() {canciones.imprimirArbolCompleto()}
 
+    // Función que obtiene el mínimo intérprete de la lista de reproducción
     fun minInterprete(nodo: Nodo?): String {
         val arbol = Arbol_Canciones()
         arbol.raiz = nodo
@@ -23,6 +30,7 @@ class TAD_Lista_De_Reproduccion {
         return arbol.raiz!!.c.obtenerInterprete()
     }
 
+    // Función que obtiene el máximo intérprete de la lista de reproducción
     fun maxInterprete(nodo: Nodo?): String {
         val arbol = Arbol_Canciones()
         arbol.raiz = nodo
@@ -31,6 +39,7 @@ class TAD_Lista_De_Reproduccion {
         return arbol.raiz!!.c.obtenerInterprete()
     }
 
+    // Función que obtiene el mínimo título de la lista de reproducción
     fun minTitulo(nodo: Nodo?): String {
         val arbol = Arbol_Canciones()
         arbol.raiz = nodo
@@ -39,6 +48,7 @@ class TAD_Lista_De_Reproduccion {
         return arbol.raiz!!.c.obtenerTitulo()
     }
 
+    // Función que obtiene el máximo título de la lista de reproducción
     fun maxTitulo(nodo: Nodo?): String {
         val arbol = Arbol_Canciones()
         arbol.raiz = nodo
@@ -47,7 +57,7 @@ class TAD_Lista_De_Reproduccion {
         return arbol.raiz!!.c.obtenerTitulo()
     }
 
-    
+    // Función que verifica si la lista de reproducción es un árbol de búsqueda
     fun esArbolDeBusqCancion(nodo: Nodo?): Boolean {
         val arbol = Arbol_Canciones()
         var primer: Boolean
@@ -67,6 +77,7 @@ class TAD_Lista_De_Reproduccion {
         return primer && segundo && tercero && cuarto
     }
 
+    // Función que convierte un árbol en una secuencia
     fun deArbolASecuencia(nodo: Nodo?): List<TAD_Cancion> {
         var result: List<TAD_Cancion>
         if (nodo == null) {return emptyList()}
@@ -74,60 +85,3 @@ class TAD_Lista_De_Reproduccion {
         return result
     }
 }
-
-/*fun main() {
-    // Crear una nueva lista de reproducción
-    val lista = TAD_Lista_De_Reproduccion("Mi lista")
-
-    // Crear algunas canciones
-    val cancion1 = TAD_Cancion("Bohemian Rhapsody", "Queen", "/ubicacion/de/la/cancion1")
-    val cancion2 = TAD_Cancion("Stairway to Heaven", "Led Zeppelin", "/ubicacion/de/la/cancion2")
-    val cancion3 = TAD_Cancion("Hotel California", "Eagles", "/ubicacion/de/la/cancion3")
-    val cancion4 = TAD_Cancion("Callaíta", "Bad Bunny", "/ubicacion/de/la/cancion4")
-    val cancion5 = TAD_Cancion("La Noche de Anoche", "Bad Bunny", "/ubicacion/de/la/cancion5")
-    val cancion6 = TAD_Cancion("Callaíta", "Feid", "/ubicacion/de/la/cancion6")
-
-    // Agregar las canciones a la lista de reproducción
-    
-    lista.agregarLista(cancion2)
-    lista.agregarLista(cancion3)
-    lista.agregarLista(cancion4)
-    lista.agregarLista(cancion1)
-    lista.agregarLista(cancion5)
-    lista.agregarLista(cancion6)
-
-    // Mostrar la lista de reproducción
-    lista.mostrarLR()
-    println("")
-    println("")
-    println(lista.obtenerLR())
-    println("")
-    println("")
-    // Mostrar la canción Callaíta de Bad Bunny
-    var cancion = lista.canciones.buscar(cancion4)
-    // imprimir tipo de la variable cancion
-    println(cancion?.javaClass)
-    println(cancion)
-    println("imprimiendo hijo derecho de cancion4 ${cancion?.der}")
-    println("imprimiendo hijo izquierdo de cancion4 ${cancion?.izq}")
-
-    println("")
-    println("raiz de la lista de reproduccion ${lista.canciones.raiz?.c}")
-    println("hijo der de raiz de la lista de reproduccion ${lista.canciones.raiz?.der?.c}")
-    println("hijo izq de raiz de la lista de reproduccion ${lista.canciones.raiz?.izq?.c}")
-
-    // Obtener y mostrar el intérprete y el título mínimos y máximos
-    println("Intérprete mínimo: ${lista.minInterprete(lista.canciones.raiz)}")
-    println("Intérprete máximo: ${lista.maxInterprete(lista.canciones.raiz)}")
-    println("Título mínimo: ${lista.minTitulo(lista.canciones.raiz)}")
-    println("Título máximo: ${lista.maxTitulo(lista.canciones.raiz)}")
-
-    // Verificar si la lista de reproducción es un árbol de búsqueda binario
-    println("¿Es un árbol de búsqueda binario? ${lista.esArbolDeBusqCancion(lista.canciones.raiz)}")
-
-    // Eliminar una canción de la lista de reproducción
-    lista.eliminarCancion("Led Zeppelin", "Stairway to Heaven")
-
-    // Mostrar la lista de reproducción después de eliminar la canción
-    lista.mostrarLR()
-}*/

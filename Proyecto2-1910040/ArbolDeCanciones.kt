@@ -1,18 +1,19 @@
 import java.io.File
 
+// Clase que contiene un árbol binario de búsqueda de canciones
 class Arbol_Canciones {
     var raiz: Nodo? = null
+    var izq: Nodo? = null
+    var der: Nodo? = null
+    var padre: Nodo? = null
+    var valor: Nodo? = null
     var minInterprete: String? = null
     var minTitulo: String? = null
     var maxInterprete: String? = null
     var maxTitulo: String? = null
 
+    // Función que agrega una canción al árbol
     fun agregar(c: TAD_Cancion) {
-        if (minInterprete == null || c.obtenerInterprete() < minInterprete!!) {minInterprete = c.obtenerInterprete()}
-        if (minTitulo == null || c.obtenerTitulo() < minTitulo!!) {minTitulo = c.obtenerTitulo()}
-        if (maxInterprete == null || c.obtenerInterprete() > maxInterprete!!) {maxInterprete = c.obtenerInterprete()}
-        if (maxTitulo == null || c.obtenerTitulo() > maxTitulo!!) {maxTitulo = c.obtenerTitulo()}
-
         if (raiz == null) {raiz = Nodo(c)}
         else {
             var nodoActual = raiz
@@ -30,13 +31,14 @@ class Arbol_Canciones {
                             nodoActual.izq = Nodo(c)
                             nodoActual.izq!!.padre = nodoActual
                             terminar = true}
-                            else {nodoActual = nodoActual.izq}
+                        else {nodoActual = nodoActual.izq}
                     }
-                else {println("La canción ya existe"); terminar = true}
+                else {println("La canción: ${c.obtenerTitulo()} de ${c.obtenerInterprete()} ya existe"); terminar = true}
             }
         }
     }
 
+    // Función que busca una canción en el árbol
     fun buscar(c: TAD_Cancion): Nodo? {
         var terminar = false
         var nodoActual = raiz
@@ -54,7 +56,8 @@ class Arbol_Canciones {
         return null
     }
 
-    fun eliminar(interprete: String, titulo: String) {
+    // Función que elimina una canción del árbol
+    fun eliminar(interprete: String, titulo: String) : Boolean {
         val cancion = TAD_Cancion(titulo, interprete, "")
         val nodo = buscar(cancion)
         if (nodo != null) {
@@ -86,17 +89,23 @@ class Arbol_Canciones {
                 if (nodoReemplazo.padre!!.izq == nodoReemplazo) {nodoReemplazo.padre!!.izq = null}
                 else {nodoReemplazo.padre!!.der = null}
             }
+            return true
         }
-        else {println("La canción no existe")}
+        else {println("La canción no existe"); return false}
     }
 
+    // Función que convierte el árbol en una lista de canciones
     fun imprimirArbolCompleto() {
         if (raiz != null) {
+            println("Lista de Reproducción:")
+            println("---------------------------------------")
             imprimirArbol(raiz)
+            println("---------------------------------------")
         }
         else {println("El árbol está vacío")}
     }
 
+    // Función que imprime el árbol recursivamente
     fun imprimirArbol(nodo: Nodo?) {
         if (nodo != null) {
             imprimirArbol(nodo.izq)
@@ -105,8 +114,9 @@ class Arbol_Canciones {
         }
     }
 
+    // Función que convierte el árbol en una lista de canciones
     override fun toString(): String {
-        var str = ""
+        var str : String
         if (raiz != null) {
             str = toString(raiz)
         }
@@ -114,6 +124,7 @@ class Arbol_Canciones {
         return str
     }
 
+    // Función que convierte el árbol en una lista de canciones
     fun toString(nodo: Nodo?): String {
         var str = ""
         if (nodo != null) {
@@ -124,52 +135,3 @@ class Arbol_Canciones {
         return str
     }
 }
-
-
-
-
-class Nodo(var c: TAD_Cancion) {
-    var izq: Nodo? = null
-    var der: Nodo? = null
-    var padre: Nodo? = null
-    var valor: Nodo? = null
-
-    override fun toString(): String {
-        return c.toString()
-    }
-}
-
-
-/*fun main() {
-    // Crear una instancia de Arbol_Canciones
-    val arbol = Arbol_Canciones()
-
-    // Crear algunas canciones
-    val cancion1 = TAD_Cancion("Bohemian Rhapsody", "Queen", "/ubicacion/de/la/cancion1")
-    val cancion2 = TAD_Cancion("Stairway to Heaven", "Led Zeppelin", "/ubicacion/de/la/cancion2")
-    val cancion3 = TAD_Cancion("Hotel California", "Eagles", "/ubicacion/de/la/cancion3")
-    val cancion4 = TAD_Cancion("Callaíta", "Bad Bunny", "/ubicacion/de/la/cancion4")
-    val cancion5 = TAD_Cancion("La Noche de Anoche", "Bad Bunny", "/ubicacion/de/la/cancion5")
-    val cancion6 = TAD_Cancion("Callaíta", "Feid", "/ubicacion/de/la/cancion6")
-
-    // Agregar las canciones al árbol
-    arbol.agregar(cancion1)
-    arbol.agregar(cancion2)
-    arbol.agregar(cancion3)
-    arbol.agregar(cancion4)
-    arbol.agregar(cancion5)
-    arbol.agregar(cancion6)
-
-    // Imprimir el árbol completo
-    arbol.ImprimirArbolCompleto()
-
-    // Buscar una canción en el árbol
-    val cancionBuscada = arbol.buscar(cancion2)
-    println("Canción buscada: ${cancionBuscada}")
-
-    // Eliminar una canción del árbol
-    arbol.eliminar(cancion2)
-
-    // Imprimir el árbol completo después de eliminar la canción
-    arbol.ImprimirArbolCompleto()
-}*/

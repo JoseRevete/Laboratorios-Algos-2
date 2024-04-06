@@ -1,17 +1,20 @@
 import java.io.File
 import java.io.FileInputStream
 
+// Clase que contiene un reproductor de canciones
 class TAD_Reproductor {
     var actual: TAD_Cancion
     var player: PausablePlayer? = null
-    var reproduciendo : Boolean
+    var reproduciendo = false
 
+    // Constructor de la clase
     constructor(c: TAD_Cancion) {
         this.actual = c
         this.reproduciendo = false
     }
 
-    fun cargarCancion(c: TAD_Cancion) {
+    // Función que carga una canción en el reproductor
+    fun cargarCancion(c: TAD_Cancion) : Boolean{
         this.actual = c
         if (c.esUbicacionValida()) {
             val input = FileInputStream(this.actual.obtenerUbicacion())
@@ -19,18 +22,20 @@ class TAD_Reproductor {
             if (file.exists()) {
                 try {
                     player = PausablePlayer(input)
+                    return true
                 }
                 catch(e: javazoom.jl.decoder.JavaLayerException) {
                     println("Error al cargar la canción: ${e.message}")
+                    return false
                 }
             } else {
                 println("El archivo ${this.actual.obtenerUbicacion()} no existe")
+                return false
             }
-        } else {
-            println("La ubicación ${this.actual.obtenerUbicacion()} no es válida")
-        }
+        } else {println("La ubicación ${this.actual.obtenerUbicacion()} no es válida"); return false}
     }
 
+    // Función que reproduce una canción
     fun reproducir() {
         try {
             player?.play()
@@ -42,6 +47,7 @@ class TAD_Reproductor {
         }
     }
 
+    // Función que detiene una canción
     fun parar() {
         try {
             player?.stop()
@@ -52,6 +58,18 @@ class TAD_Reproductor {
         }
     }
 
+    // Función que resume una canción
+    fun resumir() {
+        try {
+            player?.resume()
+            this.reproduciendo = true
+        }
+        catch(e: javazoom.jl.decoder.JavaLayerException) {
+            println("Error al resumir la canción: ${e.message}")
+        }
+    }
+
+    // Función que pausa una canción
     fun pausa() {
         try {
             player?.pause()
@@ -61,42 +79,8 @@ class TAD_Reproductor {
         }
     }
 
+    // Función que verifica si el reproductor está tocando una canción
     fun estaTocandoCancion(): Boolean {
         return reproduciendo
     }
 }
-
-
-/*fun main() {
-    // Crear una instancia de TAD_Cancion
-    val cancion = TAD_Cancion("sample", "Desconocido", "/home/joserevete/canciones/sample31.mp3")
-
-    // Crear una instancia de TAD_Reproductor
-    val reproductor = TAD_Reproductor(cancion)
-
-    println("info de cancion: ${cancion.toString()}")
-
-    // Cargar la canción en el reproductor
-    reproductor.cargarCancion(cancion)
-
-    // Reproducir la canción
-    reproductor.reproducir()
-
-    // Esperar 5 segundos
-    Thread.sleep(5000)
-
-    // Verificar si la canción está tocando
-    println("¿Está tocando la canción? ${reproductor.estaTocandoCancion()}")
-
-    // Pausar la canción
-    reproductor.pausa()
-
-    // Verificar si la canción está tocando
-    println("¿Está tocando la canción? ${reproductor.estaTocandoCancion()}")
-
-    // Parar la canción
-    reproductor.parar()
-
-    // Verificar si la canción está tocando
-    println("¿Está tocando la canción? ${reproductor.estaTocandoCancion()}")
-}*/
